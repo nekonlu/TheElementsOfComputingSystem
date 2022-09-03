@@ -42,5 +42,27 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+
+        //　変数名にアンダーバー入れられない！！！！！！！時間返せ！！！！！！！！！！
+        Mux16(a=x, b=false, sel=zx, out=outzx);
+        Not16(in=outzx, out=notoutzx);
+        Mux16(a=outzx, b=notoutzx, sel=nx, out=outx);
+
+        Mux16(a=y, b=false, sel=zy, out=outzy);
+        Not16(in=outzy, out=notoutzy);
+        Mux16(a=outzy, b=notoutzy, sel=ny, out=outy);
+
+        And16(a=outx, b=outy, out=andxy);
+        Add16(a=outx, b=outy, out=addxy);
+        Mux16(a=andxy, b=addxy, sel=f, out=xy);
+
+        Not16(in=xy, out=notxy);
+        Mux16(a=xy, b=notxy, sel=no, out=out, out[0..7]=out0to7, out[8..15]=out8to15, out[15]=ng);
+
+        Or8Way(in=out0to7, out=or0to7);
+        Or8Way(in=out8to15, out=or8to15);
+        Or(a=or0to7, b=or8to15, out=or0to15);
+        Not(in=or0to15, out=zr);
+
 }
+
